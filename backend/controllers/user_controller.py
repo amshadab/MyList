@@ -1,13 +1,15 @@
-from models import User
+from fastapi import APIRouter,Depends
+from sqlmodel import Session
+from schemas.user_schema import UserRegister,UserLogin,UserResponse
+from database import get_session
+from services.user_service import register
 
-def register(fname:str,lname:str,email:str,password:str):
-    pass
+router=APIRouter(prefix="/users",tags=["Users"])
 
-def login(email:str,password:str):
-    pass
+@router.get("/")
+def get_user():
+    return "This is User router"
 
-def logout(user_id:int):
-    pass
-
-def get_profile():
-    pass
+@router.post("/register")
+def register_user(user:UserRegister,session:Session=Depends(get_session)):
+    return register(user,session)

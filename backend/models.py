@@ -1,7 +1,7 @@
 from datetime import datetime,timezone
 from typing import Optional
 from sqlmodel import Field,SQLModel
-
+from pydantic import EmailStr
 
 def _now()->datetime:
     return datetime.now(timezone.utc)
@@ -10,7 +10,7 @@ class User(SQLModel,table=True):
     id:Optional[int]=Field(default=None,primary_key=True)
     fname:str
     lname:str
-    email:str
+    email:EmailStr
     password:str
 
 class TodoList(SQLModel,table=True):

@@ -2,8 +2,7 @@ from fastapi import FastAPI
 from sqlmodel import SQLModel
 from database import engine
 from contextlib import asynccontextmanager
-
-app=FastAPI()
+from controllers.user_controller import router as user_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -12,10 +11,7 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    # Shutdown code
-    # (Nothing to do for now)
+app=FastAPI()
 
-@app.get("/")
-def home():
-    return "Hello"
+app.include_router(user_router)
 
