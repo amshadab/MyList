@@ -1,8 +1,8 @@
-from fastapi import APIRouter,Depends
+from fastapi import APIRouter,Depends,HTTPException
 from sqlmodel import Session
-from schemas.user_schema import UserRegister
+from schemas.user_schema import UserRegister,UserLogin
 from database import get_session
-from services.user_service import register
+from services.user_service import register,login
 
 router=APIRouter(prefix="/users",tags=["Users"])
 
@@ -12,4 +12,16 @@ def get_user():
 
 @router.post("/register")
 def register_user(user:UserRegister,session:Session=Depends(get_session)):
-    return register(user,session)
+    try:
+        reuslt= register(user,session)
+        return reuslt
+    except ValueError as e:
+        raise HTTPException(status_code=409,detail=str(e))
+    
+@router.post("/login")
+def login_user(user:UserLogin,session:Session=Depends(get_session)):
+    try:
+        result=login(user,session)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400,detail=str(e))
