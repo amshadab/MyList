@@ -1,6 +1,6 @@
 from fastapi import APIRouter,Depends
 from sqlmodel import Session
-from schemas.user_schema import UserRegister,UserLogin,UserResponse
+from schemas.user_schema import UserRegister
 from database import get_session
 from services.user_service import register
 

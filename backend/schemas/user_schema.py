@@ -1,18 +1,19 @@
 from sqlmodel import SQLModel
+from pydantic import EmailStr
 
 class UserRegister(SQLModel):
     fname:str
     lname:str
-    email:str
+    email:EmailStr
     password:str
 
 
 class UserLogin(SQLModel):
-    email:str
-    passsword:str
+    email:EmailStr
+    password:str
 
 
 class UserResponse(SQLModel):
     fname:str
     lname:str
-    email:str
+    email:EmailStr
