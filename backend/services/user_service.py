@@ -1,8 +1,9 @@
 from sqlmodel import Session, select
-from pydantic import EmailStr
+from fastapi.responses import JSONResponse
+from utils.auth_jwt import create_access_token
 from models import User
 from schemas.user_schema import UserRegister
-from utils.password import hash_password,verify_password
+from utils.password import hash_password, verify_password
 
 
 def register(user: UserRegister, session: Session):
@@ -30,17 +31,27 @@ def register(user: UserRegister, session: Session):
     return new_user
 
 
-def login(user,session):
-    if(not user.email or not user.password):
+def login(user, session):
+    response = JSONResponse(content={"message":"Login Successfully"})
+    if not user.email or not user.password:
         raise ValueError("All field must be require")
-    
+
     statement = select(User).where(user.email == User.email)
     old_user = session.exec(statement).first()
-    
-    if(not old_user):
+
+    if not old_user:
         raise ValueError("User not found")
-    
-    if(not verify_password(user.password,old_user.password)):
+
+    if not verify_password(user.password, old_user.password):
         raise ValueError("Incorrect Password")
-    
-    return {user.email,user.password}
+
+    access_token = create_access_token(old_user.id)
+
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+    )
+    return response

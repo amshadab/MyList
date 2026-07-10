@@ -3,6 +3,7 @@ from sqlmodel import SQLModel
 from database import engine
 from contextlib import asynccontextmanager
 from controllers.user_controller import router as user_router
+from controllers.todolist_controller import router as todolist_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,4 +15,5 @@ async def lifespan(app: FastAPI):
 app=FastAPI(lifespan=lifespan)
 
 app.include_router(user_router)
+app.include_router(todolist_router)
 
