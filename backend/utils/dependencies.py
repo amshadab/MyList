@@ -1,6 +1,4 @@
 from fastapi import Cookie,HTTPException,Depends
-from jose import jwt, JWTError
-from config import SECRET_KEY,ALGORITHM
 from models import User
 from sqlmodel import Session
 from database import get_session

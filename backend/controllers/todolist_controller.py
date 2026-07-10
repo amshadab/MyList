@@ -3,7 +3,7 @@ from schemas.todolist_schema import TodoListCreate
 from sqlmodel import Session
 from database import get_session
 from services.todolist_service import create
-from utils.depencencies import get_current_user
+from utils.dependencies import get_current_user
 
 
 router = APIRouter(prefix="/list",tags=["List"])
