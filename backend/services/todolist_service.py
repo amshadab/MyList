@@ -1,5 +1,8 @@
 from models import TodoList
-from sqlmodel import select
+from sqlmodel import select,Session
+from fastapi import Depends
+from utils.dependencies import get_current_user
+from database import get_session
 
 def createtodo(todolist,current_user,session):
     if(not todolist.title):
@@ -41,4 +44,18 @@ def deleteTodo(todo_id,current_user,session):
     session.commit()
     
     return "Successfully deleted Todolist"
+
+def get_all_todo(current_user,session):
+    todolist=session.exec(select(TodoList).where(TodoList.user_id==current_user.id)).all()
     
+    if not todolist:
+        raise ValueError("Not have any Todolist")
+    
+    return todolist
+    
+def get_todo(todo_list_id,current_user=Depends(get_current_user),session:Session=Depends(get_session)):
+    statement=select(TodoList).where(current_user.id==TodoList.user_id,todo_list_id==TodoList.id)
+    todo=session.exec(statement).first()
+    if not todo:
+        raise ValueError("Todolist not found")
+    return todo

@@ -11,5 +11,4 @@ class TaskResponse(SQLModel):
     id: int
     title: str
     completed: bool
-
-    model_config = {"from_attributes": True}
+    todo_list_id: int
