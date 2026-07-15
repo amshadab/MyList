@@ -2,17 +2,34 @@ from fastapi import APIRouter,HTTPException,Depends
 from schemas.todolist_schema import TodoListCreate
 from sqlmodel import Session
 from database import get_session
-from services.todolist_service import create
+from services.todolist_service import createtodo,updateTodo,deleteTodo
 from utils.dependencies import get_current_user
+from schemas.todolist_schema import TodoListResponse,TodoListUpdate
 
 
 router = APIRouter(prefix="/list",tags=["List"])
 
 
-@router.post("/create")
-def create_todolist(todolist:TodoListCreate,current_user=Depends(get_current_user),session:Session=Depends(get_session)):
+@router.post("/create",response_model=TodoListResponse)
+def create(todolist:TodoListCreate,current_user=Depends(get_current_user),session:Session=Depends(get_session)):
     try:
-        result=create(todolist,current_user,session)
+        result=createtodo(todolist,current_user,session)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=409,detail=str(e))
+    
+@router.put("/update/{todo_id}")
+def update(todo_id: int,todolistupdate:TodoListUpdate,current_user=Depends(get_current_user),session:Session=Depends(get_session)):
+    try:
+        result = updateTodo(todo_id,todolistupdate,current_user,session)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=409,detail=str(e))
+    
+@router.delete("/delete/{todo_id}")
+def delete(todo_id:int,current_user=Depends(get_current_user),session:Session=Depends(get_session)):
+    try:
+        result = deleteTodo(todo_id,current_user,session)
         return result
     except ValueError as e:
         raise HTTPException(status_code=409,detail=str(e))

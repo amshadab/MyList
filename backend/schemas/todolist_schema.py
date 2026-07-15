@@ -7,6 +7,6 @@ class TodoListUpdate(SQLModel):
     title:str
 
 class TodoListResponse(SQLModel):
-    id:str
+    id:int
     title:str
 

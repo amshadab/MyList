@@ -5,7 +5,7 @@ from database import get_session
 from utils.auth_jwt import verify_access_token
 def get_current_user(session:Session=Depends(get_session),access_token:str=Cookie(None)):
     if(access_token is None):
-        raise HTTPException()
+        raise HTTPException(status_code=404,detail="Invalid access token")
     
     payload=verify_access_token(access_token)
     
