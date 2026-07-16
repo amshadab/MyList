@@ -55,3 +55,11 @@ def login(user, session):
         samesite="lax",
     )
     return response
+
+def log_out_user():
+    response=JSONResponse(
+        content={"message":"Logout Successful"}
+    )
+    
+    response.delete_cookie(key="access_token")
+    return response

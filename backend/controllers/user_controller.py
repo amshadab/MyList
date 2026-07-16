@@ -2,9 +2,9 @@ from fastapi import APIRouter,Depends,HTTPException
 from sqlmodel import Session
 from schemas.user_schema import UserRegister,UserLogin
 from database import get_session
-from services.user_service import register,login
+from services.user_service import register,login,log_out_user
 
-router=APIRouter(prefix="/users",tags=["Users"])
+router=APIRouter(prefix="/user",tags=["Users"])
 
 @router.get("/")
 def get_user():
@@ -25,3 +25,7 @@ def login_user(user:UserLogin,session:Session=Depends(get_session)):
         return result
     except ValueError as e:
         raise HTTPException(status_code=400,detail=str(e))
+    
+@router.post("/logout")
+def log_out():
+    return log_out_user()
