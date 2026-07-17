@@ -51,7 +51,7 @@ def login(user, session):
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=True,
+        secure=False,
         samesite="lax",
     )
     return response
