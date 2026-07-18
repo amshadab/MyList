@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useNavigate } from "react-router-dom";
 
@@ -18,6 +18,22 @@ function Login() {
         alert(error.response?.data?.detail || "Something went Wrong")
     }
   }
+
+
+
+useEffect(() => {
+  const checkUser = async () => {
+    try {
+      await api.get("/user/me");
+      navigate("/dashboard");
+    } catch (error) {
+      // User is not logged in.
+      // Stay on the login page.
+    }
+  };
+
+  checkUser();
+}, []);
 
   return (
     <div className="w-80 mx-auto mt-20">
