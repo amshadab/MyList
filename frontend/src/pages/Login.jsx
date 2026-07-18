@@ -12,7 +12,7 @@ function Login() {
     e.preventDefault();
     try{
     const response = await api.post("/user/login", { email, password });
-    navigate("/dashboard");
+    navigate("/todos");
     }
     catch (error){
         alert(error.response?.data?.detail || "Something went Wrong")
@@ -25,7 +25,7 @@ useEffect(() => {
   const checkUser = async () => {
     try {
       await api.get("/user/me");
-      navigate("/dashboard");
+      navigate("/todos");
     } catch (error) {
       // User is not logged in.
       // Stay on the login page.

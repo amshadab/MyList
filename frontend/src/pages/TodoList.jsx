@@ -10,7 +10,8 @@ function TodoList() {
     setList(response.data);
   };
 
-  const todoTitle = async ()=>{
+  const todoTitle = async (e)=>{
+    e.preventDefault();
     await api.post("/list/create",{title:title})
     getList();
     setTitle("")
@@ -23,12 +24,16 @@ function TodoList() {
 
   return (
     <div>
-      <h1>TodoList</h1>
-      <input className="border w-80 p-2 mb-4 rounded" type="text"  placeholder="College" value={title} onChange={(e)=>setTitle(e.target.value)}/>
-      <button className="w-50 bg-blue-600 hover:bg-blue-700 cursor-pointer mx-2 text-white p-2 rounded" onClick={todoTitle}>Add Task</button>
+      <h1 className="flex justify-center">MyList</h1>
+      <form className="flex justify-center p-5" onSubmit={todoTitle}>
+      <input className="border w-80 p-2 rounded" type="text"  placeholder="College" value={title} onChange={(e)=>setTitle(e.target.value)}/>
+      <button className="w-50 bg-blue-600 hover:bg-blue-700 cursor-pointer mx-2 text-white p-2 rounded">Add Task</button>
+      </form>
       {
-        list.map((list)=>(
-            <div key={list.id}>{list.title}</div>
+        list.map((item)=>(
+            <div className="flex ml-2 mr-2 justify-between items-center border p-3 rounded mb-2" key={item.id}>{item.title}
+            <button className="w-50 cursor-pointer bg-blue-600 text-white hover:bg-red-700 rounded p-2 ">Delete</button>
+            </div>
         ))
       }
     </div>
