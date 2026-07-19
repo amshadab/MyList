@@ -12,3 +12,8 @@ class TaskResponse(SQLModel):
     title: str
     completed: bool
     todo_list_id: int
+    
+class TodoDetailResponse(SQLModel):
+    id:int
+    title:str
+    tasks:list[TaskResponse]=[]

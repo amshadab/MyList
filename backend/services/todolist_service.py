@@ -59,3 +59,13 @@ def get_todo(todo_list_id,current_user=Depends(get_current_user),session:Session
     if not todo:
         raise ValueError("Todolist not found")
     return todo
+
+def get_by_id(todo_id,current_user,session):
+    statement=select(TodoList).where(TodoList.id==todo_id,TodoList.user_id==current_user.id)
+    
+    todo=session.exec(statement).first()
+    
+    if not todo:
+        raise ValueError("Todo not found")
+    
+    return todo
