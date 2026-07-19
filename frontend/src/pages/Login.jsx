@@ -1,74 +1,124 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import api from "../api/api";
-import { useNavigate } from "react-router-dom";
+
 
 function Login() {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
+
   const handleSubmit = async (e) => {
+
     e.preventDefault();
-    try{
-    const response = await api.post("/user/login", { email, password });
-    navigate("/todos");
-    }
-    catch (error){
-        alert(error.response?.data?.detail || "Something went Wrong")
-    }
-  }
 
-
-
-useEffect(() => {
-  const checkUser = async () => {
     try {
-      await api.get("/user/me");
+
+      await api.post("/user/login", {
+        email,
+        password
+      });
+
+
+      // login successful
       navigate("/todos");
+
+
     } catch (error) {
-      // User is not logged in.
-      // Stay on the login page.
+
+      alert(
+        error.response?.data?.detail || "Something went wrong"
+      );
+
     }
+
   };
 
-  checkUser();
-}, []);
 
   return (
+
     <div className="w-80 mx-auto mt-20">
-      <h1 className="block text-center text-2xl font-bold mb-5">Login</h1>
+
+      <h1 className="block text-center text-2xl font-bold mb-5">
+        Login
+      </h1>
+
+
       <form onSubmit={handleSubmit}>
+
+
         <input
+
           className="border w-full p-2 mb-3 rounded"
+
           type="email"
-          placeholder="Email" autoComplete="email"
+
+          placeholder="Email"
+
+          autoComplete="email"
+
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+
+          onChange={(e)=>setEmail(e.target.value)}
+
         />
+
+
         <input
+
           className="border w-full p-2 mb-4 rounded"
-          type="password" autoComplete="password"
+
+          type="password"
+
           placeholder="Password"
+
+          autoComplete="current-password"
+
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+
+          onChange={(e)=>setPassword(e.target.value)}
+
         />
+
+
         <button
-          className="bg-blue-600 hover:bg-blue-700 cursor-pointer  text-white w-full p-2 rounded"
+
+          className="bg-blue-600 hover:bg-blue-700 cursor-pointer text-white w-full p-2 rounded"
+
           type="submit"
+
         >
+
           Login
+
         </button>
+
+
       </form>
 
+
+
       <Link
+
         to="/register"
-        className="block text-center text-blue-600 hover:text-blue-800 underline"
+
+        className="block text-center text-blue-600 hover:text-blue-800 underline mt-3"
+
       >
+
         Don't have an account? Register
+
       </Link>
+
+
     </div>
+
   );
+
 }
+
 
 export default Login;

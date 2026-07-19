@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 
 
-function ProtectedRoute({ children }) {
+function PublicRoute({ children }) {
 
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
-
 
 
     useEffect(() => {
@@ -46,8 +45,8 @@ function ProtectedRoute({ children }) {
     }
 
 
-    if(!user) {
-        return <Navigate to="/" replace />;
+    if(user) {
+        return <Navigate to="/todos" replace />;
     }
 
 
@@ -56,4 +55,4 @@ function ProtectedRoute({ children }) {
 }
 
 
-export default ProtectedRoute;
+export default PublicRoute;
