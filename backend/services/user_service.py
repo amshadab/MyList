@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 from fastapi.responses import JSONResponse
-from utils.auth_jwt import create_access_token
+from utils.auth_jwt import create_access_token,create_refresh_token,verify_refresh_token
 from models import User
 from schemas.user_schema import UserRegister
 from utils.password import hash_password, verify_password
@@ -46,6 +46,7 @@ def login(user, session):
         raise ValueError("Incorrect Password")
 
     access_token = create_access_token(old_user.id)
+    refresh_token=create_refresh_token(old_user.id)
 
     response.set_cookie(
         key="access_token",
@@ -53,6 +54,14 @@ def login(user, session):
         httponly=True,
         secure=False,
         samesite="lax",
+    )
+    
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=False,
+        samesite="lax"
     )
     return response
 
@@ -62,4 +71,26 @@ def log_out_user():
     )
     
     response.delete_cookie(key="access_token")
+    response.delete_cookie(key="refresh_token")
     return response
+
+def refresh_access_token(refresh_token):
+    payload=verify_refresh_token(refresh_token)
+    user_id=payload.get("sub")
+    new_access_token=create_access_token(int(user_id))
+    
+    response=JSONResponse(
+        content={"message":"Access Token refreshed"}
+    )
+    
+    response.set_cookie(
+        key="access_token",
+        value=new_access_token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+    )
+    
+    return response
+    
+    

@@ -1,8 +1,8 @@
-from fastapi import APIRouter,Depends,HTTPException
+from fastapi import APIRouter,Depends,HTTPException,Cookie
 from sqlmodel import Session
 from schemas.user_schema import UserRegister,UserLogin
 from database import get_session
-from services.user_service import register,login,log_out_user
+from services.user_service import register,login,log_out_user,refresh_access_token
 from utils.dependencies import get_current_user
 
 router=APIRouter(prefix="/user",tags=["Users"])
@@ -33,3 +33,12 @@ def get_me(current_user=Depends(get_current_user)):
         return current_user
     except ValueError as e:
         raise HTTPException(status_code=408,detail=str(e))
+    
+    
+@router.post("/refresh")
+def get_refresh_access_token(refresh_token:str=Cookie(None)):
+    try:
+        result=refresh_access_token(refresh_token)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=401,detail=str(e))

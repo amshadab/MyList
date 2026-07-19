@@ -42,13 +42,13 @@ useEffect(() => {
         <input
           className="border w-full p-2 mb-3 rounded"
           type="email"
-          placeholder="Email"
+          placeholder="Email" autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
           className="border w-full p-2 mb-4 rounded"
-          type="password"
+          type="password" autoComplete="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
