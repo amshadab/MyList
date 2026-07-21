@@ -2,7 +2,7 @@ from fastapi import APIRouter,Depends,HTTPException
 from sqlmodel import Session
 from database import get_session
 from schemas.task_schema import TaskCreate,TaskResponse
-from services.task_service import createTask,get_all_tasks,update_task,isChecked_task
+from services.task_service import createTask,get_all_tasks,update_task,isChecked_task,delete_task
 from utils.dependencies import get_current_user
 
 router=APIRouter(prefix="/task",tags=["Task"])
@@ -38,5 +38,13 @@ def isChecked(task_id:int,current_user=Depends(get_current_user),session:Session
         return result
     except ValueError as e:
         raise HTTPException(status_code=409,detail=str(e))
+    
+@router.delete("/delete/{task_id}")
+def delete(task_id:int,session:Session=Depends(get_session)):
+    try:
+        result = delete_task(task_id,session)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=402,detail=str(e))
     
         

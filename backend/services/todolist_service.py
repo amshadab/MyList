@@ -1,19 +1,28 @@
-from models import TodoList
+from models import TodoList,Task
 from sqlmodel import select,Session
 from fastapi import Depends
 from utils.dependencies import get_current_user
 from database import get_session
 
-def createtodo(todolist,current_user,session):
-    if(not todolist.title):
+def createtodo(todolist, current_user, session):
+
+    print("User ID:", current_user.id)
+    print("Title:", todolist.title)
+
+    if not todolist.title:
         raise ValueError("Empty")
-    
-    new_list=TodoList(title=todolist.title,user_id=current_user.id)
-    
+
+    new_list = TodoList(
+        title=todolist.title,
+        user_id=current_user.id
+    )
+
     session.add(new_list)
     session.commit()
     session.refresh(new_list)
-    
+
+    print("Created Todo:", new_list)
+
     return new_list
 
 def updateTodo(todo_id,todolistupdate,current_user,session):
@@ -40,6 +49,15 @@ def deleteTodo(todo_id,current_user,session):
     if not todo:
         raise ValueError("Todolist not exist")
     
+    tasks = session.exec(
+        select(Task).where(
+            Task.todo_list_id == todo.id
+        )
+    ).all()
+    
+    for task in tasks:
+        session.delete(task)
+    
     session.delete(todo)
     session.commit()
     
@@ -47,9 +65,6 @@ def deleteTodo(todo_id,current_user,session):
 
 def get_all_todo(current_user,session):
     todolist=session.exec(select(TodoList).where(TodoList.user_id==current_user.id)).all()
-    
-    if not todolist:
-        raise ValueError("Not have any Todolist")
     
     return todolist
     

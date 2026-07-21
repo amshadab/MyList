@@ -64,3 +64,15 @@ def isChecked_task(task_id,current_user,session):
     
     return get_task
     
+
+def delete_task(task_id,session):
+    statement=select(Task).where(Task.id==task_id)
+    task=session.exec(statement).first()
+    
+    if not task:
+        raise ValueError("Task not found")
+    
+    session.delete(task)
+    session.commit()
+    
+    return task
