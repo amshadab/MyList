@@ -26,68 +26,53 @@ function TodoDetails() {
       }
 
       await api.post(`/task/create/${id}`, {
-        title: taskTitle
+        title: taskTitle,
       });
 
       getTodo();
       setTaskTitle("");
-
     } catch (error) {
       console.log(error);
     }
   };
 
-  const deleteTask=async (id)=>{
-    try{
-    await api.delete(`/task/delete/${id}`)
-      
-    }
-    catch(error){
+  const deleteTask = async (id) => {
+    try {
+      await api.delete(`/task/delete/${id}`);
+      getTodo()
+    } catch (error) {
       console.log(error);
-      
     }
-  }
+  };
 
   useEffect(() => {
     getTodo();
   }, []);
 
-
   if (!todo) {
     return <h1>Loading...</h1>;
   }
 
-
   const updateCheck = async (id, completed) => {
     try {
       await api.put(`/task/mark/${id}`, {
-        completed: completed
+        completed: completed,
       });
 
       getTodo();
-
     } catch (error) {
       console.log(error);
     }
   };
 
-
   return (
     <div className="border p-3 m-3 rounded">
+      <h1 className="text-5xl font-bold">{todo.title}</h1>
 
-      <h1 className="text-2xl font-bold">
-        {todo.title}
-      </h1>
-
-
-      <form 
-        className="flex gap mt-3" 
-        onSubmit={createTaskTitle}
-      >
-
+      <form className="flex gap mt-3" onSubmit={createTaskTitle}>
         <input
           value={taskTitle}
-          onChange={(e)=>setTaskTitle(e.target.value)}
+          onChange={(e) => setTaskTitle(e.target.value)}
           className="border w-80 p-2 rounded"
           placeholder="Read Book"
           type="text"
@@ -99,33 +84,30 @@ function TodoDetails() {
         >
           Add Task
         </button>
-
       </form>
 
-
-      {todo.tasks.map((task)=>(
-        <div 
+      {[...todo.tasks].sort((a,b)=>a.completed-b.completed).map((task) => (
+        <div
           className="flex items-center gap-3 border p-3 mt-2 rounded"
           key={task.id}
         >
-
           <input
             className="w-4 h-4 mt-0.5"
             type="checkbox"
             checked={task.completed}
-            onChange={()=>{
-              // updateCheck(task.id, !task.completed);
-              deleteTask(task.id)
+            onChange={() => {
+              updateCheck(task.id, !task.completed);
             }}
           />
 
-          <span className="text-lg font-normal">
+          <span
+            className={`text-lg font-normal ${task.completed ? "line-through text-gray-500" : ""}`}
+          >
             {task.title}
           </span>
-
+          <button onClick={()=>{deleteTask(task.id)}} className="w-15 bg-red-700 hover:bg-red-800 cursor-pointer ml-auto text-white p-2 rounded"><span>&#128465;</span></button>
         </div>
       ))}
-
     </div>
   );
 }
