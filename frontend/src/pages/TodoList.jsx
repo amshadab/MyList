@@ -36,6 +36,21 @@ function TodoList() {
     }
   };
 
+  const renameTodo = async(id,oldTitle)=>{
+    const newTitle = prompt("Enter New Title",oldTitle)
+    if(!newTitle || newTitle.trim()===""){
+      return;
+    }
+    try{
+      await api.put(`/list/update/${id}`,{title:newTitle})
+      getList();
+    }
+    catch(error){
+      console.log(error);
+      
+    }
+  }
+
   const todoTitle = async (e) => {
     e.preventDefault();
 
@@ -105,16 +120,21 @@ function TodoList() {
           className="flex ml-2 mr-2 justify-between items-center border p-3 rounded mb-2 cursor-pointer"
         >
           <span>{item.title}</span>
-
+          <div className="flex gap-2">
+<button onClick={(e)=>{
+  e.stopPropagation();
+  renameTodo(item.id);
+}} className="w-15 cursor-pointer bg-blue-800 text-white hover:bg-blue-900 rounded p-2">Edit</button>
           <button
             onClick={(e) => {
               e.stopPropagation();
               deleteTodo(item.id);
             }}
-            className="w-20 cursor-pointer bg-red-800 text-white hover:bg-red-900 rounded p-2"
+            className="w-15 cursor-pointer bg-red-800 text-white hover:bg-red-900 rounded p-2"
           >
-            Delete
+           <span>&#128465;</span>
           </button>
+          </div>
         </div>
       ))}
     </div>
